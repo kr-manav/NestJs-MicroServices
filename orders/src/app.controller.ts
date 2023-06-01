@@ -7,8 +7,9 @@ import {
   Delete,
   Param,
   Req,
+  Res,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Order } from './app.schema';
 import { AppService } from './app.service';
 import { HttpService } from '@nestjs/axios';
@@ -29,6 +30,7 @@ export class AppController {
   @Post('/placeOrder')
   async create(
     @Req() req: Request,
+    @Res() res: Response,
     @Body('pid') pid: string,
     @Body('quantity') quantity: number,
     @Body('deliveryDone') deliveryDone: number,
@@ -60,20 +62,32 @@ export class AppController {
           )
           .pipe(),
       );
+
       if (responseDecreaseQuantity.data.message) {
-        return await this.appService.create({
-          cid: req['user'].id,
-          pid,
-          quantity,
-          orderAmount,
-          deliveryDone,
-          orderCancelled,
-          deliveryDate,
-          deliveryAddress,
-          receiverPhone,
-          paymentMethod,
+        res.status(200).json({
+          Order: await this.appService.create({
+            cid: req['user'].id,
+            pid,
+            quantity,
+            orderAmount,
+            deliveryDone,
+            orderCancelled,
+            deliveryDate,
+            deliveryAddress,
+            receiverPhone,
+            paymentMethod,
+          }),
+        });
+      } else {
+        res.status(400).json({
+          message: 'Quantity Not Updated',
         });
       }
+    } else {
+      res.status(400).json({
+        message: 'Not enough Quantity',
+      });
+      return;
     }
   }
 

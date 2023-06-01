@@ -39,7 +39,7 @@ export class AppService {
 
   async checkQuantity(pid: number, quantity: number): Promise<boolean> {
     const product = await this.productModel.findById(pid);
-    return product.quantity - quantity > 0;
+    return product.quantity - quantity >= 0;
   }
 
   async getPrice(pid: number): Promise<number> {

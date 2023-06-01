@@ -7,7 +7,6 @@ export class JwtMiddleware implements NestMiddleware {
   constructor(private jwtAuthService: JwtAuthService) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
-    console.log("Middleware");
     if (token) {
       try {
         const payload = await this.jwtAuthService.verifyToken(token);
@@ -17,7 +16,6 @@ export class JwtMiddleware implements NestMiddleware {
           message: 'User not authorized',
         });
         return;
-        // Handle token verification error
       }
       next();
     }
