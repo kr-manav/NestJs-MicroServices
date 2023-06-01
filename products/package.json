@@ -33,6 +33,8 @@
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@nestjs/class-transformer": "^0.4.0",
+    "@nestjs/class-validator": "^0.13.4",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/config": "^2.3.2",
     "@nestjs/jwt": "^10.0.3",

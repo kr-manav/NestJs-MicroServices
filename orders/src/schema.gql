@@ -1,0 +1,50 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Mutation {
+  create(input: OrderInput!): Order!
+  delete(id: ID!): Order!
+  edit(id: ID!, input: OrderUpdateInput!): Order!
+}
+
+type Order {
+  cid: String!
+  deliveryAddress: String!
+  deliveryDate: String!
+  deliveryDone: Boolean!
+  orderAmount: Float!
+  orderCancelled: Boolean!
+  paymentMethod: String!
+  pid: String!
+  quantity: Float!
+  receiverPhone: String!
+}
+
+input OrderInput {
+  cid: String!
+  deliveryAddress: String!
+  deliveryDate: String!
+  deliveryDone: Boolean!
+  orderAmount: Float!
+  orderCancelled: Boolean!
+  paymentMethod: String! = "COD"
+  pid: String!
+  quantity: Float!
+  receiverPhone: String!
+}
+
+input OrderUpdateInput {
+  deliveryAddress: String!
+  deliveryDate: String!
+  deliveryDone: Boolean!
+  orderCancelled: Boolean!
+  paymentMethod: String! = "COD"
+  receiverPhone: String!
+}
+
+type Query {
+  order(id: ID!): Order!
+  orders: [Order!]!
+  ordersByCustomer(id: ID!): [Order!]!
+}

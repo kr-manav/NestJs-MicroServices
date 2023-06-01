@@ -12,7 +12,6 @@ import {
 import { Product } from './app.schema';
 import { AppService } from './app.service';
 import { Request } from '@nestjs/common';
-import { Response } from 'express';
 
 @Controller('products')
 export class AppController {
@@ -79,43 +78,5 @@ export class AppController {
   @Delete('/delete/:id')
   async delete(@Param('id') id: number): Promise<Product> {
     return await this.appService.delete(id);
-  }
-
-  @Post('/checkQuantity/:pid/:quantity')
-  async checkQuantity(
-    @Param('pid') pid: number,
-    @Param('quantity') quantity: number,
-    @Res() res: Response,
-  ): Promise<boolean> {
-    res.status(200).json({
-      message: this.appService.checkQuantity(pid, quantity),
-    });
-    return true;
-  }
-
-  @Post('/getPrice/:pid/')
-  async getPrice(
-    @Param('pid') pid: number,
-    @Res() res: Response,
-  ): Promise<number> {
-    const price = this.appService.getPrice(pid);
-    res.status(200).json({
-      message: price,
-    });
-    return price;
-  }
-
-  @Post('/decreaseQuantity/:pid/:quantity')
-  async decreaseQuantity(
-    @Param('pid') pid: number,
-    @Param('quantity') quantity: number,
-    @Res() res: Response,
-  ) {
-    const product = this.appService.decreaseQuantity(pid, quantity);
-    if (product) {
-      res.status(200).json({
-        message: true,
-      });
-    }
   }
 }

@@ -38,7 +38,7 @@ import { CustomerInput } from './app.input';
     }),
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, JwtAuthService, CustomerResolver, CustomerInput],
+  providers: [AppService, JwtAuthService, CustomerResolver],
   exports: [JwtAuthService],
 })
 export class AppModule implements NestModule {

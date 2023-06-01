@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Attributes {
+  cod: Boolean!
+  color: String!
+  delivery: String!
+}
+
+input AttributesInput {
+  cod: Boolean!
+  color: String!
+  delivery: String!
+}
+
+type Mutation {
+  create(input: ProductInput!): Product!
+  decreaseQuantity(pid: ID!, quantity: Float!): Product!
+  delete(id: ID!): Product!
+  edit(id: ID!, input: ProductUpdateInput!): Product!
+}
+
+type Product {
+  attributes: Attributes!
+  cid: String!
+  description: String!
+  image: String!
+  price: Float!
+  quantity: Float!
+  title: String!
+}
+
+input ProductInput {
+  attributes: AttributesInput!
+  cid: String!
+  description: String!
+  image: String!
+  price: Float!
+  quantity: Float!
+  title: String!
+}
+
+input ProductUpdateInput {
+  attributes: AttributesInput!
+  description: String!
+  image: String!
+  price: Float!
+  quantity: Float!
+}
+
+type Query {
+  checkQuantity(pid: ID!, quantity: Float!): Boolean!
+  getPrice(pid: ID!): Float!
+  product(id: ID!): Product!
+  products: [Product!]!
+}

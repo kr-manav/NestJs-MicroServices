@@ -29,7 +29,7 @@ export class AppService {
 
   async update(id: number, input): Promise<Order> {
     const updatedOrder = await this.orderModel
-      .findByIdAndUpdate({ _id: id }, input)
+      .findByIdAndUpdate({ _id: id }, input, { new: true })
       .exec();
     return updatedOrder;
   }

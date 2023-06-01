@@ -9,6 +9,10 @@ import { JwtAuthService } from './jwt.service';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtMiddleware } from './jwt.middleware';
 import { ProductAPIController } from './productApi.controller';
+import { AppResolver } from './app.resolver';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,6 +21,12 @@ import { ProductAPIController } from './productApi.controller';
       cache: true,
       envFilePath: './src/.env',
       isGlobal: true,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      playground: true,
+      driver: ApolloDriver,
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
@@ -27,7 +37,7 @@ import { ProductAPIController } from './productApi.controller';
     }),
   ],
   controllers: [AppController, ProductAPIController],
-  providers: [AppService, JwtAuthService],
+  providers: [AppService, JwtAuthService, AppResolver],
   exports: [JwtAuthService],
 })
 export class AppModule implements NestModule {

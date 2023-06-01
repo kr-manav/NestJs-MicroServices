@@ -25,7 +25,7 @@ export class AppService {
 
   async update(id: number, input): Promise<Product> {
     const updatedProduct = await this.productModel
-      .findByIdAndUpdate({ _id: id }, input)
+      .findByIdAndUpdate({ _id: id }, input, { new: true })
       .exec();
     return updatedProduct;
   }
@@ -49,12 +49,13 @@ export class AppService {
 
   async decreaseQuantity(pid: number, quantity: number): Promise<Product> {
     const product = await this.productModel.findById(pid);
-    await this.productModel
+
+    return await this.productModel
       .findByIdAndUpdate(
         { _id: pid },
         { quantity: product.quantity - quantity },
+        { new: true },
       )
       .exec();
-    return product;
   }
 }
