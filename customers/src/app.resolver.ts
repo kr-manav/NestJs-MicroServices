@@ -6,11 +6,11 @@ import { AppService } from './app.service';
 import * as bcrypt from 'bcrypt';
 import { JwtAuthService } from './jwt.service';
 import { CustomerInput, CustomerUpdateInput } from './app.input';
-import { Req, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Resolver(() => Customer)
-export class CustomerResolver {
+export class AppResolver {
   constructor(private readonly appService: AppService, private readonly jwtService:JwtAuthService) {}
 
   @Query(() => [Customer])

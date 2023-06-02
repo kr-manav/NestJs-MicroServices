@@ -1,15 +1,17 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
 import { ProductInput, ProductUpdateInput } from './app.input';
 import { Product } from './app.schema';
 import { AppService } from './app.service';
-
+import { JwtAuthGuard } from './jwt-auth.guard';
 @Resolver(() => Product)
 export class AppResolver {
   constructor(private readonly appService: AppService) {}
 
   @Query(() => [Product])
-  async products(): Promise<Product[]> {
-    return await this.appService.findAll();
+  @UseGuards(JwtAuthGuard)
+  async products(@Context() context: any): Promise<Product[]> {
+    return await this.appService.findAllByCID(context.req.user.id);
   }
 
   @Query(() => Product)
@@ -18,20 +20,39 @@ export class AppResolver {
   }
 
   @Mutation(() => Product)
-  async create(@Args('input') input: ProductInput): Promise<Product> {
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Args('input') input: ProductInput,
+    @Context() context: any,
+  ): Promise<Product> {
+    input.cid = context.req.user.id;
     return await this.appService.create(input);
   }
 
   @Mutation(() => Product)
+  @UseGuards(JwtAuthGuard)
   async edit(
     @Args('id', { type: () => ID }) id: number,
     @Args('input') input: ProductUpdateInput,
+    @Context() context: any,
   ): Promise<Product> {
+    const product = await this.appService.find(id);
+    if (context.req.user.id != product.cid) {
+      throw new Error('User not alllowed');
+    }
     return await this.appService.update(id, input);
   }
 
   @Mutation(() => Product)
-  async delete(@Args('id', { type: () => ID }) id: number): Promise<Product> {
+  @UseGuards(JwtAuthGuard)
+  async delete(
+    @Args('id', { type: () => ID }) id: number,
+    @Context() context: any,
+  ): Promise<Product> {
+    const product = await this.appService.find(id);
+    if (context.req.user.id != product.cid) {
+      throw new Error('User not alllowed');
+    }
     return await this.appService.delete(id);
   }
 

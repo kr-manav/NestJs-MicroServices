@@ -33,7 +33,7 @@ type Product {
 
 input ProductInput {
   attributes: AttributesInput!
-  cid: String!
+  cid: String
   description: String!
   image: String!
   price: Float!

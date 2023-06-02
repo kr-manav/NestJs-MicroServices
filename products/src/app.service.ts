@@ -14,6 +14,10 @@ export class AppService {
     return await this.productModel.find({}).exec();
   }
 
+  async findAllByCID(id: number): Promise<Product[]> {
+    return await this.productModel.find({ cid: id }).exec();
+  }
+
   async find(id: number): Promise<Product> {
     return await this.productModel.findOne({ _id: id }).exec();
   }

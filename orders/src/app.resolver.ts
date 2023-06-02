@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
 import { firstValueFrom } from 'rxjs';
 import { OrderInput, OrderUpdateInput } from './app.input';
 import { Order } from './app.schema';
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Resolver(() => Order)
 export class AppResolver {
@@ -22,14 +24,18 @@ export class AppResolver {
   }
 
   @Query(() => [Order])
-  async ordersByCustomer(
-    @Args('id', { type: () => ID }) id: number,
-  ): Promise<Order[]> {
-    return await this.appService.findAllByCID(id);
+  @UseGuards(JwtAuthGuard)
+  async ordersByCustomer(@Context() context: any): Promise<Order[]> {
+    return await this.appService.findAllByCID(context.req.user.id);
   }
 
   @Mutation(() => Order)
-  async create(@Args('input') input: OrderInput): Promise<Order> {
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Args('input') input: OrderInput,
+    @Context() context: any,
+  ): Promise<Order> {
+    input.cid = context.req.user.id;
     const responseCheckQuantity = await firstValueFrom(
       this.httpService
         .post(
@@ -66,15 +72,29 @@ export class AppResolver {
   }
 
   @Mutation(() => Order)
+  @UseGuards(JwtAuthGuard)
   async edit(
     @Args('id', { type: () => ID }) id: number,
     @Args('input') input: OrderUpdateInput,
+    @Context() context: any,
   ): Promise<Order> {
+    const order = await this.appService.find(id);
+    if (context.req.user.id != order.cid) {
+      throw new Error('User not allowed');
+    }
     return await this.appService.update(id, input);
   }
 
   @Mutation(() => Order)
-  async delete(@Args('id', { type: () => ID }) id: number): Promise<Order> {
+  @UseGuards(JwtAuthGuard)
+  async delete(
+    @Args('id', { type: () => ID }) id: number,
+    @Context() context: any,
+  ): Promise<Order> {
+    const order = await this.appService.find(id);
+    if (context.req.user.id != order.cid) {
+      throw new Error('User not allowed');
+    }
     return await this.appService.delete(id);
   }
 }

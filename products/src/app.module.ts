@@ -13,6 +13,9 @@ import { AppResolver } from './app.resolver';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { PassportModule } from '@nestjs/passport';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -32,12 +35,19 @@ import { join } from 'path';
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_ACCESS_TOKEN,
+      secret: '123',
       signOptions: { expiresIn: '60m' },
     }),
+    PassportModule,
   ],
   controllers: [AppController, ProductAPIController],
-  providers: [AppService, JwtAuthService, AppResolver],
+  providers: [
+    AppService,
+    JwtAuthService,
+    AppResolver,
+    JwtAuthGuard,
+    JwtStrategy,
+  ],
   exports: [JwtAuthService],
 })
 export class AppModule implements NestModule {

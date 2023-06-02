@@ -12,7 +12,7 @@ import { UserController } from './user.controller';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { CustomerResolver } from './app.resolver';
+import { AppResolver } from './app.resolver';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
@@ -43,7 +43,7 @@ import { JwtStrategy } from './jwt.strategy';
   providers: [
     AppService,
     JwtAuthService,
-    CustomerResolver,
+    AppResolver,
     JwtAuthGuard,
     JwtStrategy,
   ],

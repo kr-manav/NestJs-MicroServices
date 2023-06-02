@@ -14,7 +14,7 @@ export class AttributesInput {
 
 @InputType()
 export class ProductInput {
-  @Field()
+  @Field({ nullable: true })
   cid: string;
 
   @Field()

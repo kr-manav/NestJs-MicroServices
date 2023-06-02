@@ -22,7 +22,7 @@ type Order {
 }
 
 input OrderInput {
-  cid: String!
+  cid: String
   deliveryAddress: String!
   deliveryDate: String!
   deliveryDone: Boolean!
@@ -46,5 +46,5 @@ input OrderUpdateInput {
 type Query {
   order(id: ID!): Order!
   orders: [Order!]!
-  ordersByCustomer(id: ID!): [Order!]!
+  ordersByCustomer: [Order!]!
 }
