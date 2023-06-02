@@ -36,7 +36,7 @@ import { PassportModule } from '@nestjs/passport';
     MongooseModule.forFeature([{ name: 'Order', schema: OrderSchema }]),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_ACCESS_TOKEN,
+      secret: '123',
       signOptions: { expiresIn: '60m' },
     }),
     PassportModule,

@@ -5,11 +5,12 @@ import { JwtService } from '@nestjs/jwt';
 export class JwtAuthService {
   constructor(private readonly jwtService: JwtService) {}
 
-  async signPayload(payload: any): Promise<string> {
-    return await this.jwtService.signAsync(payload);
+  signPayload(payload: any): string {
+    return this.jwtService.sign(payload);
   }
 
-  async verifyToken(token: string): Promise<any> {
-    return await this.jwtService.verifyAsync(token);
+  verifyToken(token: string): any {
+    console.log("🚀 ~ file: jwt.service.ts:13 ~ JwtAuthService ~ verifyToken ~ token:", token)
+    return this.jwtService.verify(token);
   }
 }
