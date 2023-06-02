@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
 // app.resolver.ts
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
 import { Customer } from './app.schema';
 import { AppService } from './app.service';
 import * as bcrypt from 'bcrypt';
 import { JwtAuthService } from './jwt.service';
 import { CustomerInput, CustomerUpdateInput } from './app.input';
+import { Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Resolver(() => Customer)
 export class CustomerResolver {
@@ -37,7 +39,7 @@ export class CustomerResolver {
     return await this.appService.create(input);
   }
 
-  @Mutation(() => Customer)
+  @Mutation(() => String)
   async login(
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
@@ -55,10 +57,16 @@ export class CustomerResolver {
   }
 
   @Mutation(() => Customer)
+  @UseGuards(JwtAuthGuard)
   async edit(
     @Args('id', { type: () => ID }) id: number,
     @Args('input') input: CustomerUpdateInput,
+    @Context() context: any,  
   ){
+    console.log("🚀 ~ file: app.resolver.ts:66 ~ CustomerResolver ~ context:", context.req.user)
+    if (context.req.user.id != id) {
+      throw new Error('User not allowed');
+    }
     const user = await this.appService.findByID(id);
     if (user.email != input.email) {
       const userPresent = await this.appService.findByEmail(input.email);
@@ -69,10 +77,15 @@ export class CustomerResolver {
     return await this.appService.update(id, input);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Customer)
   async delete(
+    @Context() context: any,  
     @Args('id', { type: () => ID }) id: number,
   ){
+    if (context.req.user.id != id) {
+      throw new Error('User not allowed');
+    }
     return await this.appService.delete(id);
   }
 }

@@ -28,7 +28,7 @@ input CustomerUpdateInput {
 type Mutation {
   delete(id: ID!): Customer!
   edit(id: ID!, input: CustomerUpdateInput!): Customer!
-  login(email: String!, password: String!): Customer!
+  login(email: String!, password: String!): String!
   register(input: CustomerInput!): Customer!
 }
 
